@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign up - CampusPass</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">CP</span>CampusPass</a>
+    <nav class="nav" id="nav" aria-label="Main"></nav>
+  </header>
+  <main class="page narrow">
+    <div class="page-head"><h1>Create an account</h1></div>
+    <form class="box" id="register-form" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="new-password" minlength="8" required>
+        <p class="hint">At least 8 characters.</p>
+      </div>
+      <div class="field">
+        <label for="role">I am a</label>
+        <select id="role">
+          <option value="student">Student</option>
+          <option value="organizer">Event organizer</option>
+        </select>
+      </div>
+      <div class="field" id="code-field" hidden>
+        <label for="invite">Organizer invite code</label>
+        <input id="invite" type="text" autocomplete="off">
+        <p class="hint">Ask your event coordinator for the code.</p>
+      </div>
+      <button class="btn btn-block" type="submit">Create account</button>
+      <p class="form-error" id="error" role="alert"></p>
+      <p class="auth-alt">Already registered? <a href="login.html">Log in</a></p>
+    </form>
+  </main>
+  <script src="js/common.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# PostgreSQL for local development:  docker compose up -d
+# Host port 5433 avoids clashing with a PostgreSQL installed directly on the machine.
+services:
+  db:
+    image: postgres:16
+    container_name: campuspass-db
+    environment:
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: campuspass
+    ports:
+      - "5433:5432"
+    volumes:
+      - campuspass-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  campuspass-data:

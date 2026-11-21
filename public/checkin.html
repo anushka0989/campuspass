@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Check-in - CampusPass</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">CP</span>CampusPass</a>
+    <nav class="nav" id="nav" aria-label="Main"></nav>
+  </header>
+  <main class="page narrow">
+    <div class="page-head">
+      <h1>Check-in</h1>
+      <p>Scan a ticket with a QR scanner or paste the code from the student's ticket. Only tickets for your own events are accepted.</p>
+    </div>
+    <form class="box" id="checkin-form" novalidate>
+      <div class="field">
+        <label for="token">Ticket code</label>
+        <input id="token" type="text" autocomplete="off" spellcheck="false" required>
+      </div>
+      <button class="btn btn-block" type="submit">Check in</button>
+      <div id="result" class="result" role="status" hidden></div>
+    </form>
+    <div class="box" id="history-box" hidden>
+      <h2>This session</h2>
+      <ul class="history" id="history"></ul>
+    </div>
+  </main>
+  <script src="js/common.js"></script>
+  <script src="js/checkin.js"></script>
+</body>
+</html>

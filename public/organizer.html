@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - CampusPass</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">CP</span>CampusPass</a>
+    <nav class="nav" id="nav" aria-label="Main"></nav>
+  </header>
+  <main class="page">
+    <div class="page-head">
+      <h1>Organizer dashboard</h1>
+      <p>Create events, watch bookings arrive live, and check students in at the door.</p>
+    </div>
+    <div class="org-grid">
+      <aside>
+        <form class="box" id="create-form" novalidate>
+          <h2>New event</h2>
+          <div class="field">
+            <label for="title">Title</label>
+            <input id="title" type="text" maxlength="200" required>
+          </div>
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea id="description" maxlength="2000"></textarea>
+          </div>
+          <div class="field">
+            <label for="venue">Venue</label>
+            <input id="venue" type="text" maxlength="200">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="starts_at">Starts</label>
+              <input id="starts_at" type="datetime-local" required>
+            </div>
+            <div class="field">
+              <label for="total_seats">Seats</label>
+              <input id="total_seats" type="number" min="1" max="100000" step="1" value="50" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="lock_mode">Locking mode</label>
+            <select id="lock_mode">
+              <option value="rowlock">Row lock (SELECT ... FOR UPDATE)</option>
+              <option value="atomic">Atomic update (UPDATE ... WHERE seats_left &gt; 0)</option>
+            </select>
+          </div>
+          <label class="check"><input id="requires_approval" type="checkbox"> Approve each booking myself</label>
+          <label class="check"><input id="publish" type="checkbox" checked> Publish now (students can book straight away)</label>
+          <button class="btn btn-block" type="submit">Create event</button>
+          <p class="form-error" id="create-error" role="alert"></p>
+        </form>
+        <h2 class="section-title">Your events</h2>
+        <div id="event-list"></div>
+      </aside>
+      <section class="box" aria-live="polite">
+        <div id="panel-empty" class="empty"><strong>Select an event</strong>Its bookings and counts show up here.</div>
+        <div id="panel" hidden></div>
+        <div id="override" class="override" hidden>
+          <h3>Organizer controls</h3>
+          <form id="capacity-form" class="override-row" novalidate>
+            <div class="field">
+              <label for="cap-seats">Change total seats</label>
+              <input id="cap-seats" type="number" min="1" max="100000" step="1" required>
+              <p class="hint">Cannot go below the seats already booked. Extra seats go to the waitlist first.</p>
+            </div>
+            <button class="btn btn-sm" type="submit">Update seats</button>
+          </form>
+          <form id="addstudent-form" class="override-row" novalidate>
+            <div class="field">
+              <label for="add-email">Book a seat for a student</label>
+              <input id="add-email" type="email" maxlength="200" placeholder="student@example.com" required>
+              <p class="hint">Works even when bookings are closed. It still cannot exceed the seat count.</p>
+            </div>
+            <button class="btn btn-sm" type="submit">Book seat</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="js/common.js"></script>
+  <script src="js/organizer.js"></script>
+</body>
+</html>
