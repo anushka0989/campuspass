@@ -91,6 +91,7 @@
   const capInput = $('#cap-seats');
 
   function select(id) {
+    if (typeof disarmDelete === 'function') disarmDelete();
     selected = id;
     overrideEl.hidden = false;
     const ev0 = events.find((x) => String(x.id) === String(id));
@@ -197,6 +198,36 @@
       toast(err.message, 'error');
     }
     refreshPanel(true);
+  });
+
+  const delBtn = $('#delete-event');
+  let delArmed = false;
+  let delTimer = null;
+  function disarmDelete() { delArmed = false; clearTimeout(delTimer); delBtn.textContent = 'Delete event'; delBtn.classList.remove('armed'); }
+
+  delBtn.addEventListener('click', async () => {
+    if (!selected) return;
+    if (!delArmed) {
+      delArmed = true;
+      delBtn.textContent = 'Click again to delete for good';
+      delBtn.classList.add('armed');
+      delTimer = setTimeout(disarmDelete, 4000);
+      return;
+    }
+    disarmDelete();
+    delBtn.disabled = true;
+    try {
+      const r = await api(`/events/${selected}`, { method: 'DELETE' });
+      toast(r.removed_bookings ? `Event deleted, along with ${r.removed_bookings} booking(s).` : 'Event deleted.');
+      selected = null;
+      clearInterval(pollTimer);
+      panel.hidden = true;
+      overrideEl.hidden = true;
+      emptyPanel.hidden = false;
+      await loadEvents();
+      if (events.length) select(events[0].id);
+    } catch (err) { toast(err.message, 'error'); }
+    delBtn.disabled = false;
   });
 
   $('#capacity-form').addEventListener('submit', async (e) => {

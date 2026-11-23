@@ -200,6 +200,12 @@ app.post('/api/events/:id/bookings', requireAuth, requireRole('organizer'), wrap
   res.status(201).json(out);
 }));
 
+app.delete('/api/events/:id', requireAuth, requireRole('organizer'), wrap(async (req, res) => {
+  const out = await bookingService.deleteEvent(Number(req.params.id), me(req).id);
+  if (!out.ok) return sendError(res, out.code, 'Event not found.');
+  res.json({ ok: true, removed_bookings: out.removed_bookings });
+}));
+
 app.get('/api/organizer/events', requireAuth, requireRole('organizer'), wrap(async (req, res) => {
   const r = await pool.query(
     `SELECT e.id, e.title, e.venue, e.starts_at, e.total_seats, e.seats_left, e.status, e.lock_mode, e.requires_approval,

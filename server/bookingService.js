@@ -307,6 +307,20 @@ async function organizerBook(eventId, organizerId, studentEmail) {
   }
 }
 
+// ---------- delete an event ----------
+// Under the event lock so nothing can book it while it is being removed.
+// Removes its waitlist and bookings too. Only the event's own organizer may do this.
+async function deleteEvent(eventId, organizerId) {
+  return withTx(async (c) => {
+    const ev = await c.query('SELECT organizer_id FROM events WHERE id=$1 FOR UPDATE', [eventId]);
+    if (!ev.rowCount || String(ev.rows[0].organizer_id) !== String(organizerId)) return fail('NOT_FOUND');
+    const b = await c.query('DELETE FROM bookings WHERE event_id=$1', [eventId]);
+    await c.query('DELETE FROM waitlist WHERE event_id=$1', [eventId]);
+    await c.query('DELETE FROM events WHERE id=$1', [eventId]);
+    return { ok: true, removed_bookings: b.rowCount };
+  });
+}
+
 // ---------- organizer approval ----------
 // A pending booking already holds its seat, so approving never changes seats_left.
 async function approveBooking(bookingId, organizerId) {
@@ -342,6 +356,7 @@ module.exports = {
   setCapacity,
   organizerBook,
   approveBooking,
+  deleteEvent,
   updateSettings,
   makeQrToken,
   verifyQrToken,

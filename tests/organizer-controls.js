@@ -60,6 +60,18 @@ h.run('Organizer controls: overrides, lock mode, approval', async (t) => {
 
     // pending counts toward the per-student limit / duplicate rule
     t.check('student cannot book again while pending', code(await h.book(e3, C.cookie)) === 'ALREADY_BOOKED');
+
+    // ---------- 4. delete an event ----------
+    const e4 = await mk({ seats: 2, title: 'delete me' });
+    await h.book(e4, A.cookie);
+    await h.book(e4, B.cookie);
+    await h.joinWaitlist(e4, C.cookie);
+    t.check('students cannot delete events (403)', (await h.http('DELETE', `/api/events/${e4}`, { cookie: A.cookie })).status === 403);
+    const del = await h.http('DELETE', `/api/events/${e4}`, { cookie: org });
+    t.check('organizer deletes an event with bookings and waitlist', del.status === 200 && del.data.removed_bookings === 2, JSON.stringify(del.data));
+    t.check('deleted event is gone for students', (await h.myBookings(A.cookie)).every((x) => String(x.event_id) !== String(e4)));
+    t.check('deleting it again is a 404', (await h.http('DELETE', `/api/events/${e4}`, { cookie: org })).status === 404);
+    t.check('booking a deleted event is a 404', (await h.book(e4, D.cookie)).status === 404);
   } finally {
     await h.cleanupEvents(created);
   }

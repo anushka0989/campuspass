@@ -235,3 +235,5 @@ td.actions .btn + .btn { margin-left: 0.4rem; }
 .field-row > .field { min-width: 0; }
 .field-row input { box-sizing: border-box; width: 100%; min-width: 0; }
 .field label.check { display: flex; align-items: center; gap: 0.5rem; font-weight: 400; margin: 0.7rem 0 0; }
+
+.danger-zone { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
